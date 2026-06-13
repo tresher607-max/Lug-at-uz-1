@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>O'quv Lug'ati</title>
+<style>
+  :root {
+    --green: #2ecc71;
+    --blue: #3498db;
+    --red: #e74c3c;
+    --yellow: #f1c40f;
+    --light-red: #ff8a80;
+    --sky: #5fc9f3;
+    --dark: #2c3e50;
+    --bg: #f4f9f9;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; font-family: 'Segoe UI', Tahoma, sans-serif; }
+  body {
+    background: linear-gradient(135deg, var(--sky) 0%, var(--bg) 40%, #fff 100%);
+    min-height: 100vh;
+    color: var(--dark);
+    padding-bottom: 40px;
+  }
+  header {
+    background: linear-gradient(90deg, var(--green), var(--blue));
+    padding: 24px 16px;
+    text-align: center;
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    position: relative;
+    overflow: hidden;
+  }
+  header::before {
+    content: "";
+    position: absolute;
+    top: -50%; left: -10%;
+    width: 200px; height: 200px;
+    background: var(--yellow);
+    border-radius: 50%;
+    opacity: 0.25;
+  }
+  header::after {
+    content: "";
+    position: absolute;
+    bottom: -60%; right: -5%;
+    width: 220px; height: 220px;
+    background: var(--red);
+    border-radius: 50%;
+    opacity: 0.2;
+  }
+  header h1 {
+    font-size: 2rem;
+    letter-spacing: 1px;
+    position: relative;
+    z-index: 1;
+  }
+  header p { margin-top: 6px; font-size: 0.95rem; opacity: 0.95; position: relative; z-index: 1;}
+
+  .search-wrap {
+    max-width: 600px;
+    margin: 24px auto 12px;
+    padding: 0 16px;
+  }
+  .search-box {
+    display: flex;
+    gap: 10px;
+    background: #fff;
+    border-radius: 16px;
+    padding: 8px;
+    box-shadow: 0 6px 18px rgba(44,62,80,0.12);
+    border: 3px solid var(--yellow);
+  }
+  .search-box input {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-size: 1.1rem;
+    padding: 10px 14px;
+    border-radius: 12px;
+    background: var(--bg);
+  }
+  .search-box button {
+    border: none;
+    background: var(--green);
+    color: #fff;
+    font-weight: bold;
+    font-size: 1rem;
+    padding: 10px 22px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: transform 0.15s, background 0.2s;
+  }
+  .search-box button:hover { background: var(--blue); transform: scale(1.05); }
+
+  .result-card {
+    max-width: 600px;
+    margin: 16px auto;
+    padding: 0 16px;
+  }
+  .card {
+    background: #fff;
+    border-radius: 18px;
+    padding: 22px;
+    text-align: center;
+    box-shadow: 0 8px 24px rgba(44,62,80,0.15);
+    border-left: 8px solid var(--blue);
+    animation: pop 0.35s ease;
+  }
+  .card.notfound { border-left-color: var(--red); }
+  @keyframes pop {
+    from { transform: scale(0.9); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+  .card .emoji { font-size: 3.5rem; display:block; margin-bottom: 8px; }
+  .card .uzb { font-size: 1.3rem; color: var(--dark); font-weight: 600; }
+  .card .arrow { color: var(--green); font-weight:bold; margin: 4px 0; }
+  .card .en {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: var(--blue);
+    letter-spacing: 2px;
+  }
+  .card .cat {
+    margin-top: 10px;
+    display: inline-block;
+    background: var(--yellow);
+    color: var(--dark);
+    padding: 4px 14px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
+  .speak-btns {
+    margin-top: 14px;
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+  }
+  .speak-btn {
+    border: none;
+    background: var(--green);
+    color: #fff;
+    font-weight: 600;
+    padding: 8px 18px;
+    border-radius: 14px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: transform .15s, background .2s;
+  }
+  .speak-btn.uz { background: var(--sky); }
+  .speak-btn:hover { transform: scale(1.06); }
+  .speak-btn:active { transform: scale(0.96); }
+  .word-card { position: relative; }
+  .word-card .speak-icon {
+    position: absolute;
+    top: 6px;
+    right: 8px;
+    font-size: 0.85rem;
+    opacity: 0.45;
+  }
+  .card.notfound .en { color: var(--red); font-size: 1.1rem; letter-spacing: 0; }
+
+  .controls {
+    max-width: 1000px;
+    margin: 28px auto 12px;
+    padding: 0 16px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .cat-btn {
+    border: none;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 0.85rem;
+    color: #fff;
+    transition: transform 0.15s, opacity .2s;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+  }
+  .cat-btn:hover { transform: translateY(-2px); }
+  .cat-btn.active { outline: 3px solid var(--dark); }
+
+  .grid {
+    max-width: 1100px;
+    margin: 10px auto;
+    padding: 0 16px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 14px;
+  }
+  .word-card {
+    background: #fff;
+    border-radius: 14px;
+    padding: 14px 10px;
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(44,62,80,0.1);
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.2s;
+    border-bottom: 5px solid var(--green);
+  }
+  .word-card:nth-child(2n) { border-bottom-color: var(--blue); }
+  .word-card:nth-child(3n) { border-bottom-color: var(--red); }
+  .word-card:nth-child(4n) { border-bottom-color: var(--yellow); }
+  .word-card:nth-child(5n) { border-bottom-color: var(--light-red); }
+  .word-card:nth-child(6n) { border-bottom-color: var(--sky); }
+  .word-card:hover {
+    transform: translateY(-4px) scale(1.03);
+    box-shadow: 0 8px 18px rgba(44,62,80,0.2);
+  }
+  .word-card .emoji { font-size: 2rem; display:block; margin-bottom:6px; }
+  .word-card .uzb { font-weight: 700; font-size: 0.95rem; }
+  .word-card .en { font-size: 0.8rem; color: var(--blue); font-weight:600; margin-top:2px;}
+
+  .count-info {
+    text-align: center;
+    margin: 16px 0 4px;
+    color: var(--dark);
+    font-size: 0.9rem;
+    opacity: 0.7;
+  }
+
+  footer {
+    text-align: center;
+    margin-top: 40px;
+    padding: 16px;
+    color: var(--dark);
+    opacity: 0.6;
+    font-size: 0.85rem;
+  }
+
+  @media (max-width: 480px) {
+    header h1 { font-size: 1.4rem; }
+    .card .en { font-size: 1.4rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🎓 O'quv Lug'ati</h1>
+  <p>O'zbek tilidan Ingliz tiliga so'zlar lug'ati</p>
+</header>
+
+<div class="search-wrap">
+  <div class="search-box">
+    <input type="text" id="searchInput" placeholder="So'z kiriting (masalan: kitob)..." autocomplete="off">
+    <button onclick="doSearch()">Qidir</button>
+  </div>
+</div>
+
+<div class="result-card" id="resultCard"></div>
+
+<div class="controls" id="categoryButtons"></div>
+
+<div class="count-info" id="countInfo"></div>
+<div class="grid" id="wordGrid"></div>
+
+<footer>O'quv Lug'ati &mdash; jami so'zlar soni ko'rsatilgan</footer>
+
+<script>
+const DICTIONARY = {"ruchka": {"en": "PEN", "emoji": "✒️", "category": "O'quv qurollari"}, "qalam": {"en": "PENCIL", "emoji": "✏️", "category": "O'quv qurollari"}, "kitob": {"en": "BOOK", "emoji": "📖", "category": "O'quv qurollari"}, "daftar": {"en": "NOTEBOOK", "emoji": "📓", "category": "O'quv qurollari"}, "o'chirg'ich": {"en": "ERASER", "emoji": "🧹", "category": "O'quv qurollari"}, "chizg'ich": {"en": "RULER", "emoji": "📏", "category": "O'quv qurollari"}, "qaychi": {"en": "SCISSORS", "emoji": "✂️", "category": "O'quv qurollari"}, "yapishqoq": {"en": "GLUE", "emoji": "🧴", "category": "O'quv qurollari"}, "sumka": {"en": "BACKPACK", "emoji": "🎒", "category": "O'quv qurollari"}, "marker": {"en": "MARKER", "emoji": "🖊️", "category": "O'quv qurollari"}, "compas": {"en": "COMPASS", "emoji": "🧭", "category": "O'quv qurollari"}, "bo'r": {"en": "CHALK", "emoji": "🖍️", "category": "O'quv qurollari"}, "taxta": {"en": "BLACKBOARD", "emoji": "🖊️", "category": "O'quv qurollari"}, "qalamdon": {"en": "PENCIL CASE", "emoji": "🗂️", "category": "O'quv qurollari"}, "atlas": {"en": "ATLAS", "emoji": "🗺️", "category": "O'quv qurollari"}, "lenta": {"en": "TAPE", "emoji": "📎", "category": "O'quv qurollari"}, "yelim": {"en": "GLUE STICK", "emoji": "🧴", "category": "O'quv qurollari"}, "doska": {"en": "BOARD", "emoji": "🖊️", "category": "O'quv qurollari"}, "qog'oz": {"en": "PAPER", "emoji": "📄", "category": "O'quv qurollari"}, "papka": {"en": "FOLDER", "emoji": "📁", "category": "O'quv qurollari"}, "lug'at": {"en": "DICTIONARY", "emoji": "📚", "category": "O'quv qurollari"}, "rasm": {"en": "PICTURE", "emoji": "🖼️", "category": "O'quv qurollari"}, "xarita": {"en": "MAP", "emoji": "🗺️", "category": "Sayohat"}, "telefon": {"en": "PHONE", "emoji": "📱", "category": "Uy"}, "kompyuter": {"en": "COMPUTER", "emoji": "💻", "category": "Uy"}, "planshet": {"en": "TABLET", "emoji": "📲", "category": "Texnologiya"}, "klaviatura": {"en": "KEYBOARD", "emoji": "⌨️", "category": "Texnologiya"}, "sichqoncha": {"en": "MOUSE", "emoji": "🖱️", "category": "Texnologiya"}, "ekran": {"en": "SCREEN", "emoji": "🖥️", "category": "Texnologiya"}, "printer": {"en": "PRINTER", "emoji": "🖨️", "category": "Texnologiya"}, "kamera": {"en": "CAMERA", "emoji": "📷", "category": "Texnologiya"}, "naushnik": {"en": "HEADPHONES", "emoji": "🎧", "category": "Texnologiya"}, "mikrofon": {"en": "MICROPHONE", "emoji": "🎤", "category": "Texnologiya"}, "dinamik": {"en": "SPEAKER", "emoji": "🔊", "category": "Texnologiya"}, "televizor": {"en": "TV", "emoji": "📺", "category": "Uy"}, "radio": {"en": "RADIO", "emoji": "📻", "category": "Texnologiya"}, "zaryad": {"en": "CHARGER", "emoji": "🔌", "category": "Texnologiya"}, "batareya": {"en": "BATTERY", "emoji": "🔋", "category": "Texnologiya"}, "flesh disk": {"en": "USB DRIVE", "emoji": "💾", "category": "Texnologiya"}, "internet": {"en": "INTERNET", "emoji": "🌐", "category": "Texnologiya"}, "wifi": {"en": "WIFI", "emoji": "📶", "category": "Texnologiya"}, "parol": {"en": "PASSWORD", "emoji": "🔑", "category": "Texnologiya"}, "ilova": {"en": "APP", "emoji": "📲", "category": "Texnologiya"}, "dastur": {"en": "SOFTWARE", "emoji": "💿", "category": "Texnologiya"}, "fayl": {"en": "FILE", "emoji": "📁", "category": "Texnologiya"}, "yuklab olish": {"en": "DOWNLOAD", "emoji": "⬇️", "category": "Texnologiya"}, "yuborish": {"en": "UPLOAD", "emoji": "⬆️", "category": "Texnologiya"}, "xabar": {"en": "MESSAGE", "emoji": "💬", "category": "Texnologiya"}, "qo'ng'iroq": {"en": "CALL", "emoji": "📞", "category": "Texnologiya"}, "video qo'ng'iroq": {"en": "VIDEO CALL", "emoji": "📹", "category": "Texnologiya"}, "qidiruv": {"en": "SEARCH", "emoji": "🔍", "category": "Texnologiya"}, "sayt": {"en": "WEBSITE", "emoji": "🌍", "category": "Texnologiya"}, "elektron pochta": {"en": "EMAIL", "emoji": "📧", "category": "Texnologiya"}, "sun'iy idrok": {"en": "ARTIFICIAL INTELLIGENCE", "emoji": "🤖", "category": "Texnologiya"}, "robot": {"en": "ROBOT", "emoji": "🦾", "category": "Texnologiya"}, "o'yin konsoli": {"en": "GAME CONSOLE", "emoji": "🎮", "category": "Texnologiya"}, "dron": {"en": "DRONE", "emoji": "🚁", "category": "Texnologiya"}, "aqlli soat": {"en": "SMARTWATCH", "emoji": "⌚", "category": "Texnologiya"}, "matematika": {"en": "MATHEMATICS", "emoji": "➕", "category": "Fanlar"}, "fizika": {"en": "PHYSICS", "emoji": "⚛️", "category": "Fanlar"}, "kimyo": {"en": "CHEMISTRY", "emoji": "🧪", "category": "Fanlar"}, "biologiya": {"en": "BIOLOGY", "emoji": "🧬", "category": "Fanlar"}, "geografiya": {"en": "GEOGRAPHY", "emoji": "🌍", "category": "Fanlar"}, "tarix": {"en": "HISTORY", "emoji": "📜", "category": "Fanlar"}, "adabiyot": {"en": "LITERATURE", "emoji": "📖", "category": "Fanlar"}, "musiqa darsi": {"en": "MUSIC CLASS", "emoji": "🎵", "category": "Fanlar"}, "san'at": {"en": "ART", "emoji": "🎨", "category": "Fanlar"}, "ingliz tili": {"en": "ENGLISH", "emoji": "🇬🇧", "category": "Fanlar"}, "ona tili": {"en": "NATIVE LANGUAGE", "emoji": "📝", "category": "Fanlar"}, "informatika": {"en": "INFORMATICS", "emoji": "💻", "category": "Fanlar"}, "astronomiya": {"en": "ASTRONOMY", "emoji": "🔭", "category": "Fanlar"}, "psixologiya": {"en": "PSYCHOLOGY", "emoji": "🧠", "category": "Fanlar"}, "iqtisodiyot": {"en": "ECONOMICS", "emoji": "📊", "category": "Fanlar"}, "bosh og'riq": {"en": "HEADACHE", "emoji": "🤕", "category": "Tibbiyot"}, "isitma": {"en": "FEVER", "emoji": "🤒", "category": "Tibbiyot"}, "yo'tal": {"en": "COUGH", "emoji": "😷", "category": "Tibbiyot"}, "shamollash": {"en": "COLD", "emoji": "🤧", "category": "Tibbiyot"}, "gripp": {"en": "FLU", "emoji": "🦠", "category": "Tibbiyot"}, "allergiya": {"en": "ALLERGY", "emoji": "🌿", "category": "Tibbiyot"}, "jarohat": {"en": "WOUND", "emoji": "🩹", "category": "Tibbiyot"}, "suyak sinishi": {"en": "FRACTURE", "emoji": "🦴", "category": "Tibbiyot"}, "dori": {"en": "MEDICINE", "emoji": "💊", "category": "Tibbiyot"}, "ukol": {"en": "INJECTION", "emoji": "💉", "category": "Tibbiyot"}, "operatsiya": {"en": "OPERATION", "emoji": "🏥", "category": "Tibbiyot"}, "qon": {"en": "BLOOD", "emoji": "🩸", "category": "Tibbiyot"}, "nafas": {"en": "BREATH", "emoji": "💨", "category": "Tibbiyot"}, "yurak": {"en": "HEART", "emoji": "❤️", "category": "Tana"}, "o'pka": {"en": "LUNG", "emoji": "🫁", "category": "Tibbiyot"}, "jigar": {"en": "LIVER", "emoji": "🫀", "category": "Tibbiyot"}, "tish og'riq": {"en": "TOOTHACHE", "emoji": "🦷", "category": "Tibbiyot"}, "ko'z shifokor": {"en": "EYE DOCTOR", "emoji": "👁️", "category": "Tibbiyot"}, "ambulansiya": {"en": "AMBULANCE", "emoji": "🚑", "category": "Tibbiyot"}, "apteka": {"en": "PHARMACY", "emoji": "💊", "category": "Tibbiyot"}, "pasport": {"en": "PASSPORT", "emoji": "🛂", "category": "Sayohat"}, "chipta": {"en": "TICKET", "emoji": "🎫", "category": "Sayohat"}, "bagaj": {"en": "LUGGAGE", "emoji": "🧳", "category": "Sayohat"}, "yo'l": {"en": "ROAD", "emoji": "🛤️", "category": "Sayohat"}, "avtobus": {"en": "BUS", "emoji": "🚌", "category": "Transport"}, "poyezd": {"en": "TRAIN", "emoji": "🚆", "category": "Transport"}, "kema": {"en": "SHIP", "emoji": "🚢", "category": "Transport"}, "taksi": {"en": "TAXI", "emoji": "🚕", "category": "Transport"}, "avtobus bekati": {"en": "BUS STOP", "emoji": "🚏", "category": "Sayohat"}, "turistik joy": {"en": "TOURIST SPOT", "emoji": "📍", "category": "Sayohat"}, "suvenirlar": {"en": "SOUVENIRS", "emoji": "🎁", "category": "Sayohat"}, "gid": {"en": "GUIDE", "emoji": "🧭", "category": "Sayohat"}, "viza": {"en": "VISA", "emoji": "📋", "category": "Sayohat"}, "chegara": {"en": "BORDER", "emoji": "🛃", "category": "Sayohat"}, "valyuta": {"en": "CURRENCY", "emoji": "💵", "category": "Sayohat"}, "bronlash": {"en": "BOOKING", "emoji": "📅", "category": "Sayohat"}, "dam olish": {"en": "HOLIDAY", "emoji": "🏖️", "category": "Kundalik"}, "sayohat": {"en": "TRAVEL", "emoji": "✈️", "category": "Sayohat"}, "dengiz": {"en": "SEA", "emoji": "🌊", "category": "Tabiat"}, "qizil": {"en": "RED", "emoji": "🔴", "category": "Ranglar"}, "ko'k": {"en": "BLUE", "emoji": "🔵", "category": "Ranglar"}, "yashil": {"en": "GREEN", "emoji": "🟢", "category": "Ranglar"}, "sariq": {"en": "YELLOW", "emoji": "🟡", "category": "Ranglar"}, "to'q sariq": {"en": "ORANGE", "emoji": "🟠", "category": "Ranglar"}, "binafsha": {"en": "PURPLE", "emoji": "🟣", "category": "Ranglar"}, "qora": {"en": "BLACK", "emoji": "⚫", "category": "Ranglar"}, "oq": {"en": "WHITE", "emoji": "⚪", "category": "Ranglar"}, "kulrang": {"en": "GREY", "emoji": "🩶", "category": "Ranglar"}, "jigarrang": {"en": "BROWN", "emoji": "🟤", "category": "Ranglar"}, "pushti": {"en": "PINK", "emoji": "🩷", "category": "Ranglar"}, "moviy": {"en": "LIGHT BLUE", "emoji": "🩵", "category": "Ranglar"}, "to'q yashil": {"en": "DARK GREEN", "emoji": "💚", "category": "Ranglar"}, "oltin": {"en": "GOLD", "emoji": "🟡", "category": "Ranglar"}, "kumush": {"en": "SILVER", "emoji": "⚪", "category": "Ranglar"}, "nol": {"en": "ZERO", "emoji": "0️⃣", "category": "Sonlar"}, "bir": {"en": "ONE", "emoji": "1️⃣", "category": "Sonlar"}, "ikki": {"en": "TWO", "emoji": "2️⃣", "category": "Sonlar"}, "uch": {"en": "THREE", "emoji": "3️⃣", "category": "Sonlar"}, "to'rt": {"en": "FOUR", "emoji": "4️⃣", "category": "Sonlar"}, "besh": {"en": "FIVE", "emoji": "5️⃣", "category": "Sonlar"}, "olti": {"en": "SIX", "emoji": "6️⃣", "category": "Sonlar"}, "yetti": {"en": "SEVEN", "emoji": "7️⃣", "category": "Sonlar"}, "sakkiz": {"en": "EIGHT", "emoji": "8️⃣", "category": "Sonlar"}, "to'qqiz": {"en": "NINE", "emoji": "9️⃣", "category": "Sonlar"}, "o'n": {"en": "TEN", "emoji": "🔟", "category": "Sonlar"}, "yigirma": {"en": "TWENTY", "emoji": "2️⃣0️⃣", "category": "Sonlar"}, "o'ttiz": {"en": "THIRTY", "emoji": "3️⃣0️⃣", "category": "Sonlar"}, "yuz": {"en": "HUNDRED", "emoji": "💯", "category": "Sonlar"}, "ming": {"en": "THOUSAND", "emoji": "🔢", "category": "Sonlar"}, "it": {"en": "DOG", "emoji": "🐕", "category": "Hayvonlar"}, "mushuk": {"en": "CAT", "emoji": "🐈", "category": "Hayvonlar"}, "ot": {"en": "HORSE", "emoji": "🐴", "category": "Hayvonlar"}, "sigir": {"en": "COW", "emoji": "🐄", "category": "Hayvonlar"}, "qo'y": {"en": "SHEEP", "emoji": "🐑", "category": "Hayvonlar"}, "echki": {"en": "GOAT", "emoji": "🐐", "category": "Hayvonlar"}, "tovuq": {"en": "CHICKEN", "emoji": "🐔", "category": "Hayvonlar"}, "o'rdak": {"en": "DUCK", "emoji": "🦆", "category": "Hayvonlar"}, "baliq": {"en": "FISH", "emoji": "🐟", "category": "Hayvonlar"}, "qush": {"en": "BIRD", "emoji": "🐦", "category": "Hayvonlar"}, "fil": {"en": "ELEPHANT", "emoji": "🐘", "category": "Hayvonlar"}, "sher": {"en": "LION", "emoji": "🦁", "category": "Hayvonlar"}, "yo'lbars": {"en": "TIGER", "emoji": "🐯", "category": "Hayvonlar"}, "ayiq": {"en": "BEAR", "emoji": "🐻", "category": "Hayvonlar"}, "maymun": {"en": "MONKEY", "emoji": "🐒", "category": "Hayvonlar"}, "quyon": {"en": "RABBIT", "emoji": "🐰", "category": "Hayvonlar"}, "bo'ri": {"en": "WOLF", "emoji": "🐺", "category": "Hayvonlar"}, "tulki": {"en": "FOX", "emoji": "🦊", "category": "Hayvonlar"}, "ilon": {"en": "SNAKE", "emoji": "🐍", "category": "Hayvonlar"}, "qurbaqa": {"en": "FROG", "emoji": "🐸", "category": "Hayvonlar"}, "kapalak": {"en": "BUTTERFLY", "emoji": "🦋", "category": "Hayvonlar"}, "ari": {"en": "BEE", "emoji": "🐝", "category": "Hayvonlar"}, "chivin": {"en": "MOSQUITO", "emoji": "🦟", "category": "Hayvonlar"}, "pingvin": {"en": "PENGUIN", "emoji": "🐧", "category": "Hayvonlar"}, "krokodil": {"en": "CROCODILE", "emoji": "🐊", "category": "Hayvonlar"}, "non": {"en": "BREAD", "emoji": "🍞", "category": "Oziq-ovqat"}, "suv": {"en": "WATER", "emoji": "💧", "category": "Oziq-ovqat"}, "sut": {"en": "MILK", "emoji": "🥛", "category": "Oziq-ovqat"}, "tuxum": {"en": "EGG", "emoji": "🥚", "category": "Oziq-ovqat"}, "go'sht": {"en": "MEAT", "emoji": "🥩", "category": "Oziq-ovqat"}, "sabzi": {"en": "CARROT", "emoji": "🥕", "category": "Oziq-ovqat"}, "pomidor": {"en": "TOMATO", "emoji": "🍅", "category": "Oziq-ovqat"}, "bodring": {"en": "CUCUMBER", "emoji": "🥒", "category": "Oziq-ovqat"}, "piyoz": {"en": "ONION", "emoji": "🧅", "category": "Oziq-ovqat"}, "kartoshka": {"en": "POTATO", "emoji": "🥔", "category": "Oziq-ovqat"}, "olma": {"en": "APPLE", "emoji": "🍎", "category": "Oziq-ovqat"}, "banan": {"en": "BANANA", "emoji": "🍌", "category": "Oziq-ovqat"}, "uzum": {"en": "GRAPE", "emoji": "🍇", "category": "Oziq-ovqat"}, "limon": {"en": "LEMON", "emoji": "🍋", "category": "Oziq-ovqat"}, "tarvuz": {"en": "WATERMELON", "emoji": "🍉", "category": "Oziq-ovqat"}, "shaftoli": {"en": "PEACH", "emoji": "🍑", "category": "Oziq-ovqat"}, "gilos": {"en": "CHERRY", "emoji": "🍒", "category": "Oziq-ovqat"}, "anor": {"en": "POMEGRANATE", "emoji": "🍎", "category": "Oziq-ovqat"}, "choy": {"en": "TEA", "emoji": "🍵", "category": "Oziq-ovqat"}, "qahva": {"en": "COFFEE", "emoji": "☕", "category": "Oziq-ovqat"}, "sharbat": {"en": "JUICE", "emoji": "🧃", "category": "Oziq-ovqat"}, "guruch": {"en": "RICE", "emoji": "🍚", "category": "Oziq-ovqat"}, "makaron": {"en": "PASTA", "emoji": "🍝", "category": "Oziq-ovqat"}, "tort": {"en": "CAKE", "emoji": "🎂", "category": "Oziq-ovqat"}, "muzqaymoq": {"en": "ICE CREAM", "emoji": "🍦", "category": "Oziq-ovqat"}, "shokolad": {"en": "CHOCOLATE", "emoji": "🍫", "category": "Oziq-ovqat"}, "tuz": {"en": "SALT", "emoji": "🧂", "category": "Oziq-ovqat"}, "shakar": {"en": "SUGAR", "emoji": "🍬", "category": "Oziq-ovqat"}, "ko'ylak": {"en": "SHIRT", "emoji": "👕", "category": "Kiyim"}, "shim": {"en": "TROUSERS", "emoji": "👖", "category": "Kiyim"}, "ko'cha kiyim": {"en": "DRESS", "emoji": "👗", "category": "Kiyim"}, "poyabzal": {"en": "SHOES", "emoji": "👟", "category": "Kiyim"}, "etik": {"en": "BOOTS", "emoji": "👢", "category": "Kiyim"}, "paypoq": {"en": "SOCKS", "emoji": "🧦", "category": "Kiyim"}, "shapka": {"en": "HAT", "emoji": "🧢", "category": "Kiyim"}, "sharf": {"en": "SCARF", "emoji": "🧣", "category": "Kiyim"}, "qo'lqop": {"en": "GLOVES", "emoji": "🧤", "category": "Kiyim"}, "kurtka": {"en": "JACKET", "emoji": "🧥", "category": "Kiyim"}, "ko'zoynek": {"en": "GLASSES", "emoji": "👓", "category": "Kiyim"}, "kamar": {"en": "BELT", "emoji": "👔", "category": "Kiyim"}, "bosh": {"en": "HEAD", "emoji": "🗣️", "category": "Tana"}, "ko'z": {"en": "EYE", "emoji": "👁️", "category": "Tana"}, "quloq": {"en": "EAR", "emoji": "👂", "category": "Tana"}, "burun": {"en": "NOSE", "emoji": "👃", "category": "Tana"}, "og'iz": {"en": "MOUTH", "emoji": "👄", "category": "Tana"}, "til": {"en": "TONGUE", "emoji": "👅", "category": "Tana"}, "tish": {"en": "TOOTH", "emoji": "🦷", "category": "Tana"}, "qo'l": {"en": "HAND", "emoji": "✋", "category": "Tana"}, "barmoq": {"en": "FINGER", "emoji": "☝️", "category": "Tana"}, "oyoq": {"en": "FOOT", "emoji": "🦶", "category": "Tana"}, "yelka": {"en": "SHOULDER", "emoji": "💪", "category": "Tana"}, "orqa": {"en": "BACK", "emoji": "🔙", "category": "Tana"}, "qorin": {"en": "STOMACH", "emoji": "🫃", "category": "Tana"}, "ona": {"en": "MOTHER", "emoji": "👩", "category": "Oila"}, "ota": {"en": "FATHER", "emoji": "👨", "category": "Oila"}, "aka": {"en": "BROTHER", "emoji": "👦", "category": "Oila"}, "singil": {"en": "SISTER", "emoji": "👧", "category": "Oila"}, "buvi": {"en": "GRANDMOTHER", "emoji": "👵", "category": "Oila"}, "bobo": {"en": "GRANDFATHER", "emoji": "👴", "category": "Oila"}, "amaki": {"en": "UNCLE", "emoji": "👨", "category": "Oila"}, "xola": {"en": "AUNT", "emoji": "👩", "category": "Oila"}, "bola": {"en": "CHILD", "emoji": "🧒", "category": "Oila"}, "oila": {"en": "FAMILY", "emoji": "👨‍👩‍👧‍👦", "category": "Oila"}, "uy": {"en": "HOUSE", "emoji": "🏠", "category": "Uy"}, "xona": {"en": "ROOM", "emoji": "🚪", "category": "Uy"}, "eshik": {"en": "DOOR", "emoji": "🚪", "category": "Uy"}, "deraza": {"en": "WINDOW", "emoji": "🪟", "category": "Uy"}, "stol": {"en": "TABLE", "emoji": "🪑", "category": "Uy"}, "stul": {"en": "CHAIR", "emoji": "🪑", "category": "Uy"}, "karavot": {"en": "BED", "emoji": "🛏️", "category": "Uy"}, "divan": {"en": "SOFA", "emoji": "🛋️", "category": "Uy"}, "shkaf": {"en": "WARDROBE", "emoji": "🗄️", "category": "Uy"}, "lampa": {"en": "LAMP", "emoji": "💡", "category": "Uy"}, "muzlatgich": {"en": "FRIDGE", "emoji": "🧊", "category": "Uy"}, "kir yuvish": {"en": "WASHING MACHINE", "emoji": "🫧", "category": "Uy"}, "gilamcha": {"en": "CARPET", "emoji": "🧹", "category": "Uy"}, "soat": {"en": "CLOCK", "emoji": "🕐", "category": "Uy"}, "oyna": {"en": "MIRROR", "emoji": "🪞", "category": "Uy"}, "parda": {"en": "CURTAIN", "emoji": "🪟", "category": "Uy"}, "mashina": {"en": "CAR", "emoji": "🚗", "category": "Transport"}, "samolyot": {"en": "AIRPLANE", "emoji": "✈️", "category": "Transport"}, "velosiped": {"en": "BICYCLE", "emoji": "🚲", "category": "Transport"}, "mototsikl": {"en": "MOTORCYCLE", "emoji": "🏍️", "category": "Transport"}, "metro": {"en": "METRO", "emoji": "🚇", "category": "Transport"}, "vertolyot": {"en": "HELICOPTER", "emoji": "🚁", "category": "Transport"}, "quyosh": {"en": "SUN", "emoji": "☀️", "category": "Tabiat"}, "oy": {"en": "MOON", "emoji": "🌙", "category": "Tabiat"}, "yulduz": {"en": "STAR", "emoji": "⭐", "category": "Tabiat"}, "osmon": {"en": "SKY", "emoji": "🌤️", "category": "Tabiat"}, "bulut": {"en": "CLOUD", "emoji": "☁️", "category": "Tabiat"}, "yomg'ir": {"en": "RAIN", "emoji": "🌧️", "category": "Tabiat"}, "qor": {"en": "SNOW", "emoji": "❄️", "category": "Tabiat"}, "shamol": {"en": "WIND", "emoji": "💨", "category": "Tabiat"}, "daryo": {"en": "RIVER", "emoji": "🏞️", "category": "Tabiat"}, "tog'": {"en": "MOUNTAIN", "emoji": "⛰️", "category": "Tabiat"}, "o'rmon": {"en": "FOREST", "emoji": "🌲", "category": "Tabiat"}, "daraxt": {"en": "TREE", "emoji": "🌳", "category": "Tabiat"}, "gul": {"en": "FLOWER", "emoji": "🌸", "category": "Tabiat"}, "o't": {"en": "GRASS", "emoji": "🌿", "category": "Tabiat"}, "tosh": {"en": "STONE", "emoji": "🪨", "category": "Tabiat"}, "yer": {"en": "EARTH", "emoji": "🌍", "category": "Tabiat"}, "olov": {"en": "FIRE", "emoji": "🔥", "category": "Tabiat"}, "sinf": {"en": "CLASSROOM", "emoji": "🏫", "category": "Maktab"}, "o'qituvchi": {"en": "TEACHER", "emoji": "👩‍🏫", "category": "Maktab"}, "o'quvchi": {"en": "STUDENT", "emoji": "👨‍🎓", "category": "Maktab"}, "imtihon": {"en": "EXAM", "emoji": "📝", "category": "Maktab"}, "dars": {"en": "LESSON", "emoji": "📒", "category": "Maktab"}, "vazifa": {"en": "HOMEWORK", "emoji": "📋", "category": "Maktab"}, "baho": {"en": "GRADE", "emoji": "💯", "category": "Maktab"}, "kutubxona": {"en": "LIBRARY", "emoji": "📚", "category": "Shahar"}, "sport zali": {"en": "GYM", "emoji": "🏋️", "category": "Maktab"}, "maktab": {"en": "SCHOOL", "emoji": "🏫", "category": "Shahar"}, "shifokor": {"en": "DOCTOR", "emoji": "👨‍⚕️", "category": "Kasblar"}, "haydovchi": {"en": "DRIVER", "emoji": "🚗", "category": "Kasblar"}, "oshpaz": {"en": "COOK", "emoji": "👨‍🍳", "category": "Kasblar"}, "muhandis": {"en": "ENGINEER", "emoji": "👷", "category": "Kasblar"}, "pilot": {"en": "PILOT", "emoji": "👨‍✈️", "category": "Kasblar"}, "politsiyachi": {"en": "POLICE", "emoji": "👮", "category": "Kasblar"}, "sotuvchi": {"en": "SELLER", "emoji": "🛒", "category": "Kasblar"}, "fermer": {"en": "FARMER", "emoji": "👨‍🌾", "category": "Kasblar"}, "rassom": {"en": "ARTIST", "emoji": "🎨", "category": "Kasblar"}, "musiqachi": {"en": "MUSICIAN", "emoji": "🎸", "category": "Kasblar"}, "jurnalist": {"en": "JOURNALIST", "emoji": "📰", "category": "Kasblar"}, "arxitektor": {"en": "ARCHITECT", "emoji": "🏗️", "category": "Kasblar"}, "dasturchi": {"en": "PROGRAMMER", "emoji": "💻", "category": "Kasblar"}, "futbol": {"en": "FOOTBALL", "emoji": "⚽", "category": "Sport"}, "basketbol": {"en": "BASKETBALL", "emoji": "🏀", "category": "Sport"}, "voleybol": {"en": "VOLLEYBALL", "emoji": "🏐", "category": "Sport"}, "tennis": {"en": "TENNIS", "emoji": "🎾", "category": "Sport"}, "suzish": {"en": "SWIMMING", "emoji": "🏊", "category": "Sport"}, "yugurish": {"en": "RUNNING", "emoji": "🏃", "category": "Sport"}, "boks": {"en": "BOXING", "emoji": "🥊", "category": "Sport"}, "gimnastika": {"en": "GYMNASTICS", "emoji": "🤸", "category": "Sport"}, "karate": {"en": "KARATE", "emoji": "🥋", "category": "Sport"}, "kurash": {"en": "WRESTLING", "emoji": "🤼", "category": "Sport"}, "o'zbekiston": {"en": "UZBEKISTAN", "emoji": "🇺🇿", "category": "Mamlakatlar"}, "rossiya": {"en": "RUSSIA", "emoji": "🇷🇺", "category": "Mamlakatlar"}, "xitoy": {"en": "CHINA", "emoji": "🇨🇳", "category": "Mamlakatlar"}, "amerika": {"en": "AMERICA", "emoji": "🇺🇸", "category": "Mamlakatlar"}, "angliya": {"en": "ENGLAND", "emoji": "🇬🇧", "category": "Mamlakatlar"}, "germaniya": {"en": "GERMANY", "emoji": "🇩🇪", "category": "Mamlakatlar"}, "fransiya": {"en": "FRANCE", "emoji": "🇫🇷", "category": "Mamlakatlar"}, "turkiya": {"en": "TURKEY", "emoji": "🇹🇷", "category": "Mamlakatlar"}, "hindiston": {"en": "INDIA", "emoji": "🇮🇳", "category": "Mamlakatlar"}, "yaponiya": {"en": "JAPAN", "emoji": "🇯🇵", "category": "Mamlakatlar"}, "koreya": {"en": "KOREA", "emoji": "🇰🇷", "category": "Mamlakatlar"}, "italiya": {"en": "ITALY", "emoji": "🇮🇹", "category": "Mamlakatlar"}, "ispaniya": {"en": "SPAIN", "emoji": "🇪🇸", "category": "Mamlakatlar"}, "braziliya": {"en": "BRAZIL", "emoji": "🇧🇷", "category": "Mamlakatlar"}, "baxtli": {"en": "HAPPY", "emoji": "😊", "category": "Hislar"}, "g'amgin": {"en": "SAD", "emoji": "😢", "category": "Hislar"}, "g'azablangan": {"en": "ANGRY", "emoji": "😠", "category": "Hislar"}, "qo'rqqan": {"en": "SCARED", "emoji": "😨", "category": "Hislar"}, "hayron": {"en": "SURPRISED", "emoji": "😲", "category": "Hislar"}, "charchagan": {"en": "TIRED", "emoji": "😴", "category": "Hislar"}, "och": {"en": "HUNGRY", "emoji": "🤤", "category": "Hislar"}, "chanqagan": {"en": "THIRSTY", "emoji": "🥤", "category": "Hislar"}, "kasal": {"en": "SICK", "emoji": "🤒", "category": "Hislar"}, "sog'lom": {"en": "HEALTHY", "emoji": "💪", "category": "Hislar"}, "kuchli": {"en": "STRONG", "emoji": "🦾", "category": "Hislar"}, "aqlli": {"en": "SMART", "emoji": "🧠", "category": "Hislar"}, "yaxshi": {"en": "GOOD", "emoji": "👍", "category": "Hislar"}, "yomon": {"en": "BAD", "emoji": "👎", "category": "Hislar"}, "katta": {"en": "BIG", "emoji": "🔼", "category": "Hislar"}, "kichik": {"en": "SMALL", "emoji": "🔽", "category": "Hislar"}, "tez": {"en": "FAST", "emoji": "⚡", "category": "Hislar"}, "sekin": {"en": "SLOW", "emoji": "🐢", "category": "Hislar"}, "issiq": {"en": "HOT", "emoji": "🔥", "category": "Hislar"}, "sovuq": {"en": "COLD", "emoji": "❄️", "category": "Hislar"}, "nok": {"en": "PEAR", "emoji": "🍐", "category": "Oziq-ovqat"}, "o'rik": {"en": "APRICOT", "emoji": "🍑", "category": "Oziq-ovqat"}, "qovun": {"en": "MELON", "emoji": "🍈", "category": "Oziq-ovqat"}, "qulupnay": {"en": "STRAWBERRY", "emoji": "🍓", "category": "Oziq-ovqat"}, "sarimsoq": {"en": "GARLIC", "emoji": "🧄", "category": "Oziq-ovqat"}, "qalampir": {"en": "PEPPER", "emoji": "🫑", "category": "Oziq-ovqat"}, "karam": {"en": "CABBAGE", "emoji": "🥬", "category": "Oziq-ovqat"}, "gitara": {"en": "GUITAR", "emoji": "🎸", "category": "Musiqa"}, "pianino": {"en": "PIANO", "emoji": "🎹", "category": "Musiqa"}, "skripka": {"en": "VIOLIN", "emoji": "🎻", "category": "Musiqa"}, "doira": {"en": "DRUM", "emoji": "🥁", "category": "Musiqa"}, "nay": {"en": "FLUTE", "emoji": "🎵", "category": "Musiqa"}, "truba": {"en": "TRUMPET", "emoji": "🎺", "category": "Musiqa"}, "dutor": {"en": "DUTAR", "emoji": "🎵", "category": "Musiqa"}, "rubob": {"en": "RUBAB", "emoji": "🎵", "category": "Musiqa"}, "bo'ron": {"en": "STORM", "emoji": "⛈️", "category": "Tabiat"}, "chaqmoq": {"en": "LIGHTNING", "emoji": "⚡", "category": "Tabiat"}, "momaqaldiroq": {"en": "THUNDER", "emoji": "🌩️", "category": "Tabiat"}, "tuman": {"en": "FOG", "emoji": "🌫️", "category": "Tabiat"}, "bahor": {"en": "SPRING", "emoji": "🌸", "category": "Tabiat"}, "yoz": {"en": "SUMMER", "emoji": "☀️", "category": "Tabiat"}, "kuz": {"en": "AUTUMN", "emoji": "🍂", "category": "Tabiat"}, "qish": {"en": "WINTER", "emoji": "❄️", "category": "Tabiat"}, "harorat": {"en": "TEMPERATURE", "emoji": "🌡️", "category": "Tabiat"}, "ob-havo": {"en": "WEATHER", "emoji": "🌤️", "category": "Tabiat"}, "ko'l": {"en": "LAKE", "emoji": "🏞️", "category": "Tabiat"}, "sahro": {"en": "DESERT", "emoji": "🏜️", "category": "Tabiat"}, "vodiy": {"en": "VALLEY", "emoji": "🏔️", "category": "Tabiat"}, "qoya": {"en": "CLIFF", "emoji": "🪨", "category": "Tabiat"}, "sharshara": {"en": "WATERFALL", "emoji": "🌊", "category": "Tabiat"}, "botqoq": {"en": "SWAMP", "emoji": "🌿", "category": "Tabiat"}, "vulqon": {"en": "VOLCANO", "emoji": "🌋", "category": "Tabiat"}, "zilzila": {"en": "EARTHQUAKE", "emoji": "🌍", "category": "Tabiat"}, "kamalak": {"en": "RAINBOW", "emoji": "🌈", "category": "Tabiat"}, "shudring": {"en": "DEW", "emoji": "💧", "category": "Tabiat"}, "aysberg": {"en": "ICEBERG", "emoji": "🧊", "category": "Tabiat"}, "o'rmon yong'ini": {"en": "WILDFIRE", "emoji": "🔥", "category": "Tabiat"}, "ko'cha": {"en": "STREET", "emoji": "🛣️", "category": "Shahar"}, "ko'prik": {"en": "BRIDGE", "emoji": "🌉", "category": "Shahar"}, "maydon": {"en": "SQUARE", "emoji": "🏛️", "category": "Shahar"}, "park": {"en": "PARK", "emoji": "🌳", "category": "Shahar"}, "hovuz": {"en": "FOUNTAIN", "emoji": "⛲", "category": "Shahar"}, "bank": {"en": "BANK", "emoji": "🏦", "category": "Shahar"}, "mehmonxona": {"en": "HOTEL", "emoji": "🏨", "category": "Shahar"}, "restoran": {"en": "RESTAURANT", "emoji": "🍽️", "category": "Shahar"}, "kafe": {"en": "CAFE", "emoji": "☕", "category": "Shahar"}, "kino teatr": {"en": "CINEMA", "emoji": "🎬", "category": "Shahar"}, "teatr": {"en": "THEATRE", "emoji": "🎭", "category": "Shahar"}, "muzey": {"en": "MUSEUM", "emoji": "🏛️", "category": "Shahar"}, "stadion": {"en": "STADIUM", "emoji": "🏟️", "category": "Shahar"}, "aeroporti": {"en": "AIRPORT", "emoji": "✈️", "category": "Shahar"}, "vokzal": {"en": "STATION", "emoji": "🚉", "category": "Shahar"}, "jinoiy": {"en": "PRISON", "emoji": "⛓️", "category": "Shahar"}, "masjid": {"en": "MOSQUE", "emoji": "🕌", "category": "Shahar"}, "cherkov": {"en": "CHURCH", "emoji": "⛪", "category": "Shahar"}, "fabrika": {"en": "FACTORY", "emoji": "🏭", "category": "Shahar"}, "ofis": {"en": "OFFICE", "emoji": "🏢", "category": "Shahar"}, "shifoxona": {"en": "HOSPITAL", "emoji": "🏥", "category": "Shahar"}, "universitet": {"en": "UNIVERSITY", "emoji": "🎓", "category": "Shahar"}, "supermarket": {"en": "SUPERMARKET", "emoji": "🛒", "category": "Shahar"}, "bozor": {"en": "MARKET", "emoji": "🛒", "category": "Kundalik"}, "chorraha": {"en": "CROSSROADS", "emoji": "🚦", "category": "Shahar"}, "lift": {"en": "ELEVATOR", "emoji": "🛗", "category": "Shahar"}, "zinapoya": {"en": "STAIRS", "emoji": "🪜", "category": "Shahar"}, "bino": {"en": "BUILDING", "emoji": "🏗️", "category": "Shahar"}, "uyqu": {"en": "SLEEP", "emoji": "😴", "category": "Kundalik"}, "ovqat": {"en": "FOOD", "emoji": "🍽️", "category": "Kundalik"}, "o'yin": {"en": "GAME", "emoji": "🎮", "category": "Kundalik"}, "musiqa": {"en": "MUSIC", "emoji": "🎵", "category": "Kundalik"}, "kino": {"en": "MOVIE", "emoji": "🎬", "category": "Kundalik"}, "sport": {"en": "SPORT", "emoji": "⚽", "category": "Kundalik"}, "do'st": {"en": "FRIEND", "emoji": "🤝", "category": "Kundalik"}, "ish": {"en": "WORK", "emoji": "💼", "category": "Kundalik"}, "tug'ilgan kun": {"en": "BIRTHDAY", "emoji": "🎂", "category": "Kundalik"}, "sovg'a": {"en": "GIFT", "emoji": "🎁", "category": "Kundalik"}, "sog'liq": {"en": "HEALTH", "emoji": "❤️", "category": "Kundalik"}, "kasalxona": {"en": "HOSPITAL", "emoji": "🏥", "category": "Kundalik"}, "dorixona": {"en": "PHARMACY", "emoji": "💊", "category": "Kundalik"}, "do'kon": {"en": "SHOP", "emoji": "🏪", "category": "Kundalik"}, "pul": {"en": "MONEY", "emoji": "💰", "category": "Kundalik"}, "vaqt": {"en": "TIME", "emoji": "⏰", "category": "Kundalik"}, "kun": {"en": "DAY", "emoji": "📅", "category": "Kundalik"}, "kecha": {"en": "NIGHT", "emoji": "🌙", "category": "Kundalik"}, "ertalab": {"en": "MORNING", "emoji": "🌅", "category": "Kundalik"}, "kechqurun": {"en": "EVENING", "emoji": "🌆", "category": "Kundalik"}, "hafta": {"en": "WEEK", "emoji": "📆", "category": "Kundalik"}, "oy (vaqt)": {"en": "MONTH", "emoji": "📅", "category": "Kundalik"}, "yil": {"en": "YEAR", "emoji": "🗓️", "category": "Kundalik"}};
+
+const colors = ['#2ecc71', '#3498db', '#e74c3c', '#f1c40f', '#ff8a80', '#5fc9f3'];
+
+const categories = {};
+for (const [word, info] of Object.entries(DICTIONARY)) {
+  if (!categories[info.category]) categories[info.category] = [];
+  categories[info.category].push(word);
+}
+
+let currentCategory = null;
+
+function renderCategoryButtons() {
+  const wrap = document.getElementById('categoryButtons');
+  wrap.innerHTML = '';
+  const allBtn = document.createElement('button');
+  allBtn.className = 'cat-btn active';
+  allBtn.textContent = "Barchasi";
+  allBtn.style.background = '#34495e';
+  allBtn.onclick = () => { currentCategory = null; renderGrid(); highlightActive(allBtn); };
+  wrap.appendChild(allBtn);
+
+  let i = 0;
+  for (const cat of Object.keys(categories).sort()) {
+    const btn = document.createElement('button');
+    btn.className = 'cat-btn';
+    btn.textContent = cat;
+    btn.style.background = colors[i % colors.length];
+    btn.onclick = () => { currentCategory = cat; renderGrid(); highlightActive(btn); };
+    wrap.appendChild(btn);
+    i++;
+  }
+}
+
+function highlightActive(btn) {
+  document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+function renderGrid() {
+  const grid = document.getElementById('wordGrid');
+  grid.innerHTML = '';
+  const words = currentCategory ? categories[currentCategory] : Object.keys(DICTIONARY);
+  document.getElementById('countInfo').textContent = `Jami: ${words.length} ta so'z`;
+  for (const word of words) {
+    const info = DICTIONARY[word];
+    const card = document.createElement('div');
+    card.className = 'word-card';
+    card.innerHTML = `<span class="emoji">${info.emoji}</span>
+                      <div class="uzb">${word}</div>
+                      <div class="en">${info.en}</div>
+                      <span class="speak-icon">🔊</span>`;
+    card.onclick = () => {
+      document.getElementById('searchInput').value = word;
+      doSearch();
+      document.getElementById('resultCard').scrollIntoView({behavior:'smooth', block:'center'});
+    };
+    grid.appendChild(card);
+  }
+}
+
+function speak(text, lang) {
+  if (!('speechSynthesis' in window)) {
+    alert("Brauzeringiz ovozli o'qishni qo'llamaydi.");
+    return;
+  }
+  speechSynthesis.cancel();
+  const utter = new SpeechSynthesisUtterance(text);
+  utter.lang = lang;
+  utter.rate = 0.9;
+  speechSynthesis.speak(utter);
+}
+
+function escapeJs(str) {
+  return String(str).replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+}
+
+function doSearch() {
+  const q = document.getElementById('searchInput').value.trim().toLowerCase();
+  const resultCard = document.getElementById('resultCard');
+  if (!q) { resultCard.innerHTML = ''; return; }
+  const info = DICTIONARY[q];
+  if (info) {
+    resultCard.innerHTML = `
+      <div class="card">
+        <span class="emoji">${info.emoji}</span>
+        <div class="uzb">${q}</div>
+        <div class="arrow">⬇</div>
+        <div class="en">${info.en}</div>
+        <div class="cat">${info.category}</div>
+        <div class="speak-btns">
+          <button class="speak-btn" onclick="speak('${escapeJs(info.en)}','en-US')">🔊 EN</button>
+          <button class="speak-btn uz" onclick="speak('${escapeJs(q)}','uz-UZ')">🔊 UZ</button>
+        </div>
+      </div>`;
+  } else {
+    resultCard.innerHTML = `
+      <div class="card notfound">
+        <span class="emoji">❓</span>
+        <div class="en">"${q}" topilmadi. Boshqa so'z urinib ko'ring.</div>
+      </div>`;
+  }
+}
+
+document.getElementById('searchInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') doSearch();
+});
+
+renderCategoryButtons();
+renderGrid();
+</script>
+
+</body>
+</html>
